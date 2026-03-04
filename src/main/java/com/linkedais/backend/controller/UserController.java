@@ -1,9 +1,14 @@
 package com.linkedais.backend.controller;
 
+import com.linkedais.backend.model.User;
+import com.linkedais.backend.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.linkedais.backend.dto.UserProfileDTO;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +22,11 @@ import java.util.Map;
 @RestController  // This is a REST API controller
 @RequestMapping("/api/user")  // All endpoints start with /api/user
 public class UserController {
+    private final UserService userService;
 
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
     /**
      * GET CURRENT USER ENDPOINT
      * GET /api/user/me
@@ -42,5 +51,10 @@ public class UserController {
         response.put("authorities", authentication.getAuthorities());
         
         return response;
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getPublicProfile(@PathVariable Long id) {
+        UserProfileDTO profile = userService.getPublicProfile(id);
+        return ResponseEntity.ok(profile);
     }
 }
