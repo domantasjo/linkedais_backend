@@ -74,12 +74,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Step 7: Store authentication in Spring Security's context
         // Now the entire application knows this user is authenticated
         SecurityContextHolder.getContext().setAuthentication(auth);
-        
+
       } catch (Exception e) {
+
         // If token validation fails (expired, invalid signature, etc.)
         // We just ignore it and let the request continue as UNAUTHENTICATED
         // Protected endpoints will reject unauthenticated requests
       }
+
     }
     
     // Step 8: Continue processing the request (move to next filter or endpoint)
