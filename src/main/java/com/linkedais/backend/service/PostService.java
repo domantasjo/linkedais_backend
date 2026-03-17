@@ -60,4 +60,12 @@ public class PostService {
         // 3. Return the full list to the controller
         return postResponses;
     }
+    public void deletePostById(Long id, String email) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+        if (!post.getAuthor().getEmail().equals(email))
+        {
+            throw new RuntimeException("You can only delete your own posts");
+        }
+        postRepository.deleteById(id);
+    }
 }
