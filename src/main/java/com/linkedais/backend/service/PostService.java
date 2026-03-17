@@ -39,7 +39,7 @@ public class PostService {
         response.setContent(saved.getContent());
         response.setCreatedAt(saved.getCreatedAt());
         response.setAuthorId(saved.getAuthor().getId());
-        response.setAuthorName(saved.getAuthor().getEmail());
+        response.setAuthorName(saved.getAuthor().getName());
         return response;
     }
     public List<PostResponse> getAllPosts() {
@@ -54,10 +54,18 @@ public class PostService {
             response.setContent(post.getContent());
             response.setCreatedAt(post.getCreatedAt());
             response.setAuthorId(post.getAuthor().getId());
-            response.setAuthorName(post.getAuthor().getEmail());
+            response.setAuthorName(post.getAuthor().getName());
             postResponses.add(response);
         }
         // 3. Return the full list to the controller
         return postResponses;
+    }
+    public void deletePostById(Long id, String email) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+        if (!post.getAuthor().getEmail().equals(email))
+        {
+            throw new RuntimeException("You can only delete your own posts");
+        }
+        postRepository.deleteById(id);
     }
 }
