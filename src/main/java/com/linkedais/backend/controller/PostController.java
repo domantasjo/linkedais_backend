@@ -28,8 +28,8 @@ public class PostController {
         return ResponseEntity.status(201).body(response);
     }
     @GetMapping
-    public ResponseEntity<List<PostResponse>> getAllPosts() {
-        return ResponseEntity.ok(postService.getAllPosts());
+    public ResponseEntity<List<PostResponse>> getAllPosts(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(postService.getAllPosts(page, size));
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePostById(@PathVariable Long id, Principal principal) {
