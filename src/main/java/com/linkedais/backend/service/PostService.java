@@ -7,8 +7,11 @@ import com.linkedais.backend.model.User;
 import com.linkedais.backend.repository.PostRepository;
 import com.linkedais.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,9 +45,10 @@ public class PostService {
         response.setAuthorName(saved.getAuthor().getName());
         return response;
     }
-    public List<PostResponse> getAllPosts() {
+    public List<PostResponse> getAllPosts(int page, int size) {
         // 1. Fetch all posts ordered by newest first
-        List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc();
+        Pageable pageable = PageRequest.of(page, size);
+        List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc(pageable).getContent();
         List<PostResponse> postResponses = new ArrayList<>();
 
         // 2. Loop through each post and convert to PostResponse DTO
