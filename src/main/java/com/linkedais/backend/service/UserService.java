@@ -2,9 +2,13 @@ package com.linkedais.backend.service;
 
 import com.linkedais.backend.dto.UpdateProfileRequest;
 import com.linkedais.backend.dto.UserProfileDTO;
+import com.linkedais.backend.dto.UserSearchResponse;
 import com.linkedais.backend.model.User;
 import com.linkedais.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -19,6 +23,14 @@ public class UserService {
         return toProfileDTO(user);
     }
 
+    public List<UserSearchResponse> searchUsers(String query, String currentUserEmail) {
+        User currentUser = findByEmail(currentUserEmail);
+        List<User> results = userRepository.searchByName(query, currentUser.getId());
+
+        return results.stream()
+                .limit(20)
+                .map(u -> new UserSearchResponse(u.getId(), u.getName(), u.getStudyProgram()))
+                .collect(Collectors.toList());
     public UserProfileDTO getMyProfile(String email) {
         User user = findByEmail(email);
         return toProfileDTO(user);
