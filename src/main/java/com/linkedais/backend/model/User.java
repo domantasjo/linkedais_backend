@@ -2,6 +2,8 @@ package com.linkedais.backend.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User Entity - Represents a user in our database
@@ -28,6 +30,20 @@ public class User {
 
     // User's display name (optional - can be null)
     private String name;
+
+    @Column(length = 500)
+    private String bio;
+
+    @Column(length = 200)
+    private String university;
+
+    @Column(name = "study_program", length = 200)
+    private String studyProgram;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_skills", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "skill", length = 50)
+    private List<String> skills = new ArrayList<>();
 
     // Timestamp when user registered
     @Column(name = "created_at")  // Column name in database will be "created_at"
@@ -103,5 +119,37 @@ public class User {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public String getUniversity() {
+        return university;
+    }
+
+    public void setUniversity(String university) {
+        this.university = university;
+    }
+
+    public String getStudyProgram() {
+        return studyProgram;
+    }
+
+    public void setStudyProgram(String studyProgram) {
+        this.studyProgram = studyProgram;
+    }
+
+    public List<String> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(List<String> skills) {
+        this.skills = skills;
     }
 }
