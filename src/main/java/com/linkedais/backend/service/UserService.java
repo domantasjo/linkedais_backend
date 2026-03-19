@@ -31,6 +31,8 @@ public class UserService {
                 .limit(20)
                 .map(u -> new UserSearchResponse(u.getId(), u.getName(), u.getStudyProgram()))
                 .collect(Collectors.toList());
+    }
+
     public UserProfileDTO getMyProfile(String email) {
         User user = findByEmail(email);
         return toProfileDTO(user);
