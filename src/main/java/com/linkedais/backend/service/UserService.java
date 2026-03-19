@@ -1,5 +1,6 @@
 package com.linkedais.backend.service;
 
+import com.linkedais.backend.dto.UpdateProfileRequest;
 import com.linkedais.backend.dto.UserProfileDTO;
 import com.linkedais.backend.dto.UserSearchResponse;
 import com.linkedais.backend.model.User;
@@ -30,6 +31,24 @@ public class UserService {
                 .limit(20)
                 .map(u -> new UserSearchResponse(u.getId(), u.getName(), u.getStudyProgram()))
                 .collect(Collectors.toList());
+    public UserProfileDTO getMyProfile(String email) {
+        User user = findByEmail(email);
+        return toProfileDTO(user);
+    }
+
+    public UserProfileDTO updateProfile(String email, UpdateProfileRequest request) {
+        User user = findByEmail(email);
+
+        user.setName(request.getName());
+        user.setBio(request.getBio());
+        user.setUniversity(request.getUniversity());
+        user.setStudyProgram(request.getStudyProgram());
+        if (request.getSkills() != null) {
+            user.setSkills(request.getSkills());
+        }
+
+        User updated = userRepository.save(user);
+        return toProfileDTO(updated);
     }
 
     public User updateUser(User user) {

@@ -19,6 +19,12 @@ public class GlobalExceptionHandler {
         if (e.getMessage().equals("User not found")) {
             return ResponseEntity.status(404).body(Map.of("error", e.getMessage()));
         }
+        if (e.getMessage().equals("Comment not found")) {
+            return ResponseEntity.status(404).body(Map.of("error", e.getMessage()));
+        }
+        if (e.getMessage().equals("Forbidden")) {
+            return ResponseEntity.status(403).body(Map.of("error", e.getMessage()));
+        }
         return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
     }
 }

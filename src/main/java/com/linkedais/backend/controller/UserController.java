@@ -2,12 +2,14 @@ package com.linkedais.backend.controller;
 
 import com.linkedais.backend.model.User;
 import com.linkedais.backend.service.UserService;
+import com.linkedais.backend.dto.UpdateProfileRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import com.linkedais.backend.dto.UserProfileDTO;
 import com.linkedais.backend.dto.UpdateNameRequest;
+import jakarta.validation.Valid;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,43 +65,20 @@ public class UserController {
      */
     @GetMapping("/profile")
     public ResponseEntity<UserProfileDTO> getMyProfile(Authentication authentication) {
-        // Get email from authenticated user
         String email = authentication.getName();
-
-        // Fetch full user from database
-        User user = userService.findByEmail(email);
-
-        UserProfileDTO profile = new UserProfileDTO(
-                user.getId(),
-                user.getName()
-        );
-        return ResponseEntity.ok(profile);
+        return ResponseEntity.ok(userService.getMyProfile(email));
     }
 
     /**
-     * UPDATE USER'S NAME
-     * PUT /api/user/profile/name
+     * UPDATE CURRENT USER'S PROFILE
+     * PUT /api/user/profile
      */
-    @PutMapping("/profile/name")
-    public ResponseEntity<UserProfileDTO> updateName(
+    @PutMapping("/profile")
+    public ResponseEntity<UserProfileDTO> updateProfile(
             Authentication authentication,
-            @RequestBody UpdateNameRequest request) {
-
-        // Get email from authenticated user
+            @Valid @RequestBody UpdateProfileRequest request) {
         String email = authentication.getName();
-
-        // Fetch full user from database
-        User user = userService.findByEmail(email);
-
-        // Update the name
-        user.setName(request.getName());
-        User updatedUser = userService.updateUser(user);
-
-        UserProfileDTO profile = new UserProfileDTO(
-                updatedUser.getId(),
-                updatedUser.getName()
-        );
-        return ResponseEntity.ok(profile);
+        return ResponseEntity.ok(userService.updateProfile(email, request));
     }
 
 }
