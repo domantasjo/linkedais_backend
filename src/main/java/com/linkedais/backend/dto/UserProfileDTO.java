@@ -1,6 +1,13 @@
 package com.linkedais.backend.dto;
 
+import java.util.List;
+
 public record UserProfileDTO(
         Long id,
-        String name
+        String name,
+        String email,
+        String bio,
+        String university,
+        String studyProgram,
+        List<String> skills
 ) {}
