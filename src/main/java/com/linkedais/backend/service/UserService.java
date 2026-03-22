@@ -31,6 +31,8 @@ public class UserService {
                 .limit(20)
                 .map(u -> new UserSearchResponse(u.getId(), u.getName(), u.getStudyProgram()))
                 .collect(Collectors.toList());
+    }
+
     public UserProfileDTO getMyProfile(String email) {
         User user = findByEmail(email);
         return toProfileDTO(user);
@@ -60,7 +62,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // Add this new method
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
@@ -77,4 +78,5 @@ public class UserService {
                 user.getSkills()
         );
     }
+
 }
