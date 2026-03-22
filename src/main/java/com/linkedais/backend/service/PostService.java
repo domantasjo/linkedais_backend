@@ -4,6 +4,7 @@ import com.linkedais.backend.dto.CreatePostRequest;
 import com.linkedais.backend.dto.PostResponse;
 import com.linkedais.backend.model.Post;
 import com.linkedais.backend.model.User;
+import com.linkedais.backend.repository.LikeRepository;
 import com.linkedais.backend.repository.PostRepository;
 import com.linkedais.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ public class PostService {
     private PostRepository postRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private LikeRepository likeRepository;
 
     public PostResponse createPost(CreatePostRequest request, String email) {
         // 1. Find the user by email from the JWT token
@@ -43,6 +46,7 @@ public class PostService {
         response.setCreatedAt(saved.getCreatedAt());
         response.setAuthorId(saved.getAuthor().getId());
         response.setAuthorName(saved.getAuthor().getName());
+        response.setLikeCount(likeRepository.countByPostId(saved.getId()));
         return response;
     }
     public List<PostResponse> getAllPosts(int page, int size) {
@@ -59,6 +63,7 @@ public class PostService {
             response.setCreatedAt(post.getCreatedAt());
             response.setAuthorId(post.getAuthor().getId());
             response.setAuthorName(post.getAuthor().getName());
+            response.setLikeCount(likeRepository.countByPostId(post.getId()));
             postResponses.add(response);
         }
         // 3. Return the full list to the controller

@@ -6,6 +6,7 @@ public class PostResponse {
     private long id;
     private String content;
     private LocalDateTime createdAt;
+    private int likeCount;
 
     // Author info
     private long authorId;
@@ -24,4 +25,6 @@ public class PostResponse {
     public void setAuthorName(String authorName) { this.authorName = authorName; }
     public String getAuthorAvatar() { return authorAvatar; }
     public void setAuthorAvatar(String authorAvatar) { this.authorAvatar = authorAvatar;}
+    public int getLikeCount() { return likeCount; }
+    public void setLikeCount(int likeCount) { this.likeCount = likeCount; }
 }
