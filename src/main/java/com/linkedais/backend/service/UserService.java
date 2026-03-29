@@ -75,7 +75,10 @@ public class UserService {
                 user.getBio(),
                 user.getUniversity(),
                 user.getStudyProgram(),
-                user.getSkills()
+                user.getSkills(),
+                user.getCourses() != null ? user.getCourses().stream()
+                        .map(c -> new com.linkedais.backend.dto.CourseDTO(c.getId(), c.getName(), c.getInstructor()))
+                        .collect(Collectors.toList()) : List.of()
         );
     }
 

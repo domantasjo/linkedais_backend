@@ -45,6 +45,14 @@ public class User {
     @Column(name = "skill", length = 50)
     private List<String> skills = new ArrayList<>();
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "user_courses",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "course_id")
+    )
+    private List<Course> courses = new ArrayList<>();
+
     // Timestamp when user registered
     @Column(name = "created_at")  // Column name in database will be "created_at"
     private LocalDateTime createdAt;
@@ -151,5 +159,13 @@ public class User {
 
     public void setSkills(List<String> skills) {
         this.skills = skills;
+    }
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
     }
 }

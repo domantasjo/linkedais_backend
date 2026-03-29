@@ -9,5 +9,6 @@ public record UserProfileDTO(
         String bio,
         String university,
         String studyProgram,
-        List<String> skills
+        List<String> skills,
+        List<CourseDTO> courses
 ) {}
