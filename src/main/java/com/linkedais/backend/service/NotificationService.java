@@ -72,7 +72,20 @@ public class NotificationService {
                 n.getPostId(),
                 n.getCommentId(),
                 n.isRead(),
-                n.getCreatedAt()
+                n.getCreatedAt(),
+                n.getConnectionId()
         );
+    }
+    public void markAsRead(Long id) {
+        Notification notification = notificationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Notification not found"));
+        notification.setRead(true);
+        notificationRepository.save(notification);
+    }
+    public List<NotificationResponse> getUnreadNotifications(Long userId) {
+        return notificationRepository.findByUserIdAndReadFalseOrderByCreatedAtDesc(userId)
+                .stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
     }
 }

@@ -4,6 +4,7 @@ import com.linkedais.backend.dto.CreatePostRequest;
 import com.linkedais.backend.dto.PostResponse;
 import com.linkedais.backend.model.Post;
 import com.linkedais.backend.model.User;
+import com.linkedais.backend.repository.CommentRepository;
 import com.linkedais.backend.repository.LikeRepository;
 import com.linkedais.backend.repository.PostRepository;
 import com.linkedais.backend.repository.UserRepository;
@@ -25,6 +26,8 @@ public class PostService {
     private UserRepository userRepository;
     @Autowired
     private LikeRepository likeRepository;
+    @Autowired
+    private CommentRepository commentRepository;
 
     public PostResponse createPost(CreatePostRequest request, String email) {
         // 1. Find the user by email from the JWT token
@@ -47,6 +50,7 @@ public class PostService {
         response.setAuthorId(saved.getAuthor().getId());
         response.setAuthorName(saved.getAuthor().getName());
         response.setLikeCount(likeRepository.countByPostId(saved.getId()));
+        response.setCommentCount(0);
         return response;
     }
     public List<PostResponse> getAllPosts(int page, int size) {
@@ -64,6 +68,7 @@ public class PostService {
             response.setAuthorId(post.getAuthor().getId());
             response.setAuthorName(post.getAuthor().getName());
             response.setLikeCount(likeRepository.countByPostId(post.getId()));
+            response.setCommentCount(commentRepository.countByPostId(post.getId()));
             postResponses.add(response);
         }
         // 3. Return the full list to the controller

@@ -12,6 +12,7 @@ public class PostResponse {
     private long authorId;
     private String authorName;
     private String authorAvatar;
+    private int commentCount;
 
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }
@@ -27,4 +28,6 @@ public class PostResponse {
     public void setAuthorAvatar(String authorAvatar) { this.authorAvatar = authorAvatar;}
     public int getLikeCount() { return likeCount; }
     public void setLikeCount(int likeCount) { this.likeCount = likeCount; }
+    public int getCommentCount() { return commentCount; }
+    public void setCommentCount(int commentCount) { this.commentCount = commentCount; }
 }
