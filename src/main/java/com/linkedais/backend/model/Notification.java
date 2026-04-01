@@ -33,6 +33,9 @@ public class Notification {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "connection_id")
+    private Long connectionId;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
@@ -62,4 +65,7 @@ public class Notification {
     public void setRead(boolean read) { this.read = read; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
+
+    public Long getConnectionId() { return connectionId; }
+    public void setConnectionId(Long connectionId) { this.connectionId = connectionId; }
 }

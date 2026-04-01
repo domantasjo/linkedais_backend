@@ -1,11 +1,13 @@
 package com.linkedais.backend.controller;
 
+import com.linkedais.backend.dto.ConnectionResponse;
 import com.linkedais.backend.service.ConnectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/connections")
@@ -32,5 +34,9 @@ public class ConnectionController {
     public ResponseEntity<String> getStatus(@PathVariable Long receiverId, Principal principal) {
         String status = connectionService.getConnectionStatus(principal.getName(), receiverId);
         return ResponseEntity.ok(status);
+    }
+    @GetMapping("/pending")
+    public ResponseEntity<List<ConnectionResponse>> getPendingRequests(Principal principal) {
+        return ResponseEntity.ok(connectionService.getPendingRequests(principal.getName()));
     }
 }

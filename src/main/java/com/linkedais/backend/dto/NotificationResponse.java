@@ -11,10 +11,11 @@ public class NotificationResponse {
     private Long commentId;
     private boolean read;
     private LocalDateTime createdAt;
+    private Long connectionId;
 
     public NotificationResponse() {}
 
-    public NotificationResponse(Long id, Long userId, String type, String message, Long postId, Long commentId, boolean read, LocalDateTime createdAt) {
+    public NotificationResponse(Long id, Long userId, String type, String message, Long postId, Long commentId, boolean read, LocalDateTime createdAt, Long connectionId) {
         this.id = id;
         this.userId = userId;
         this.type = type;
@@ -23,6 +24,7 @@ public class NotificationResponse {
         this.commentId = commentId;
         this.read = read;
         this.createdAt = createdAt;
+        this.connectionId = connectionId;
     }
 
     public Long getId() { return id; }
@@ -48,4 +50,7 @@ public class NotificationResponse {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public Long getConnectionId() { return connectionId; }
+    public void setConnectionId(Long connectionId) { this.connectionId = connectionId; }
 }
