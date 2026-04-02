@@ -88,4 +88,12 @@ public class NotificationService {
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
+
+    public void markAllAsRead(Long userId) {
+        List<Notification> unread = notificationRepository.findByUserIdAndReadFalseOrderByCreatedAtDesc(userId);
+        for (Notification notification : unread) {
+            notification.setRead(true);
+        }
+        notificationRepository.saveAll(unread);
+    }
 }
