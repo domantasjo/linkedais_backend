@@ -63,7 +63,7 @@ public class SecurityConfig {
       // Configure which URLs need authentication
       .authorizeHttpRequests(auth -> auth
         // These URLs are PUBLIC - anyone can access without login
-        .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
+        .requestMatchers("/api/auth/**").permitAll()
         
         // All other URLs require authentication (must have valid JWT token)
         .anyRequest().authenticated())
@@ -72,8 +72,7 @@ public class SecurityConfig {
       .exceptionHandling(ex -> ex
         .authenticationEntryPoint((req, res, e) -> res.sendError(401, "Unauthorized")))
       
-      // Allow H2 console to be displayed in iframe (for development only)
-      .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
+      .headers(headers -> headers.frameOptions(frame -> frame.deny()));
 
     // Add our JWT filter BEFORE Spring's default authentication filter
     // This ensures JWT tokens are checked first
