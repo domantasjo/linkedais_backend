@@ -39,4 +39,13 @@ public class UsersController {
     public ResponseEntity<UserProfileDTO> getUserById(@PathVariable Long userId) {
         return ResponseEntity.ok(userService.getPublicProfile(userId));
     }
+
+    /**
+     * GET ACADEMIC DASHBOARD
+     * GET /api/users/{userId}/academic
+     */
+    @GetMapping("/{userId}/academic")
+    public ResponseEntity<com.linkedais.backend.dto.AcademicDashboardDTO> getAcademicDashboard(@PathVariable Long userId) {
+        return ResponseEntity.ok(userService.getAcademicDashboard(userId));
+    }
 }
