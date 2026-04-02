@@ -61,6 +61,11 @@ public class User {
 
     @Column(name = "academic_record_summary", length = 1000)
     private String academicRecordSummary;
+    @ElementCollection
+    @CollectionTable(name="user_completed_courses", joinColumns=@JoinColumn(name="user_id"))
+    @Column(name="course_id")
+    private List<Long> completedCourseIds = new ArrayList<>();
+
 
     // Timestamp when user registered
     @Column(name = "created_at")  // Column name in database will be "created_at"
@@ -201,4 +206,7 @@ public class User {
     public void setAcademicRecordSummary(String academicRecordSummary) {
         this.academicRecordSummary = academicRecordSummary;
     }
+    public List<Long> getCompletedCourseIds() { return completedCourseIds; }
+
+    public void setCompletedCourseIds(List<Long> completedCourseIds) { this.completedCourseIds = completedCourseIds; }
 }

@@ -25,11 +25,20 @@ public class NotificationController {
     public ResponseEntity<List<NotificationResponse>> getNotifications(Principal principal) {
         User user = userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        return ResponseEntity.ok(notificationService.getUnreadNotifications(user.getId()));
+        return ResponseEntity.ok(notificationService.getUserNotifications(user.getId()));
     }
+
     @PutMapping("/{id}/read")
     public ResponseEntity<Void> markAsRead(@PathVariable Long id) {
         notificationService.markAsRead(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/read-all")
+    public ResponseEntity<Void> markAllAsRead(Principal principal) {
+        User user = userRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        notificationService.markAllAsRead(user.getId());
         return ResponseEntity.ok().build();
     }
 }
