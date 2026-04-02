@@ -53,6 +53,12 @@ public class User {
     )
     private List<Course> courses = new ArrayList<>();
 
+    @ElementCollection
+    @CollectionTable(name="user_completed_courses", joinColumns=@JoinColumn(name="user_id"))
+    @Column(name="course_id")
+    private List<Long> completedCourseIds = new ArrayList<>();
+
+
     // Timestamp when user registered
     @Column(name = "created_at")  // Column name in database will be "created_at"
     private LocalDateTime createdAt;
@@ -168,4 +174,8 @@ public class User {
     public void setCourses(List<Course> courses) {
         this.courses = courses;
     }
+
+    public List<Long> getCompletedCourseIds() { return completedCourseIds; }
+
+    public void setCompletedCourseIds(List<Long> completedCourseIds) { this.completedCourseIds = completedCourseIds; }
 }

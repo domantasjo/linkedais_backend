@@ -16,6 +16,9 @@ public class Course {
     @Column(nullable = false)
     private String instructor;
 
+    @Column(nullable = false)
+    private int credits;
+
     // Constructors
     public Course() {}
 
@@ -23,6 +26,7 @@ public class Course {
         this.name = name;
         this.instructor = instructor;
     }
+
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -33,4 +37,7 @@ public class Course {
 
     public String getInstructor() { return instructor; }
     public void setInstructor(String instructor) { this.instructor = instructor; }
+
+    public int getCredits() { return credits; }
+    public void setCredits(int credits) { this.credits = credits; }
 }
