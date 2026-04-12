@@ -23,6 +23,18 @@ public class UserService {
         return toProfileDTO(user);
     }
 
+    public com.linkedais.backend.dto.AcademicDashboardDTO getAcademicDashboard(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        return new com.linkedais.backend.dto.AcademicDashboardDTO(
+                user.getCourses() != null ? user.getCourses().stream()
+                        .map(c -> new com.linkedais.backend.dto.CourseDTO(c.getId(), c.getName(), c.getInstructor()))
+                        .collect(Collectors.toList()) : List.of(),
+                user.getDegreeProgress() != null ? user.getDegreeProgress() : 0,
+                user.getUpcomingSchedule() != null ? user.getUpcomingSchedule() : "No upcoming schedule",
+                user.getAcademicRecordSummary() != null ? user.getAcademicRecordSummary() : "No academic record summary available"
+        );
+    }
+
     public List<UserSearchResponse> searchUsers(String query, String currentUserEmail) {
         User currentUser = findByEmail(currentUserEmail);
         List<User> results = userRepository.searchByName(query, currentUser.getId());

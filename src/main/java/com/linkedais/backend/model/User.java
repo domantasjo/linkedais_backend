@@ -53,6 +53,20 @@ public class User {
     )
     private List<Course> courses = new ArrayList<>();
 
+    @Column(name = "degree_progress")
+    private Integer degreeProgress;
+
+    @Column(name = "upcoming_schedule", length = 1000)
+    private String upcomingSchedule;
+
+    @Column(name = "academic_record_summary", length = 1000)
+    private String academicRecordSummary;
+    @ElementCollection
+    @CollectionTable(name="user_completed_courses", joinColumns=@JoinColumn(name="user_id"))
+    @Column(name="course_id")
+    private List<Long> completedCourseIds = new ArrayList<>();
+
+
     // Timestamp when user registered
     @Column(name = "created_at")  // Column name in database will be "created_at"
     private LocalDateTime createdAt;
@@ -168,4 +182,31 @@ public class User {
     public void setCourses(List<Course> courses) {
         this.courses = courses;
     }
+
+    public Integer getDegreeProgress() {
+        return degreeProgress;
+    }
+
+    public void setDegreeProgress(Integer degreeProgress) {
+        this.degreeProgress = degreeProgress;
+    }
+
+    public String getUpcomingSchedule() {
+        return upcomingSchedule;
+    }
+
+    public void setUpcomingSchedule(String upcomingSchedule) {
+        this.upcomingSchedule = upcomingSchedule;
+    }
+
+    public String getAcademicRecordSummary() {
+        return academicRecordSummary;
+    }
+
+    public void setAcademicRecordSummary(String academicRecordSummary) {
+        this.academicRecordSummary = academicRecordSummary;
+    }
+    public List<Long> getCompletedCourseIds() { return completedCourseIds; }
+
+    public void setCompletedCourseIds(List<Long> completedCourseIds) { this.completedCourseIds = completedCourseIds; }
 }
