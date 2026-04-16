@@ -104,12 +104,51 @@ public class ConnectionService {
         return "NONE";
     }
 
+    public List<ConnectionResponse> getAcceptedConnections(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<Connection> asSender = connectionRepository
+                .findBySenderIdAndStatus(user.getId(), ConnectionStatus.ACCEPTED);
+        List<Connection> asReceiver = connectionRepository
+                .findByReceiverIdAndStatus(user.getId(), ConnectionStatus.ACCEPTED);
+
+        List<ConnectionResponse> result = new java.util.ArrayList<>();
+
+        asSender.forEach(c -> result.add(new ConnectionResponse(
+                c.getId(),
+                c.getSender().getId(),
+                c.getSender().getName(),
+                c.getReceiver().getId(),
+                c.getReceiver().getName(),
+                c.getStatus().toString()
+        )));
+
+        asReceiver.forEach(c -> result.add(new ConnectionResponse(
+                c.getId(),
+                c.getSender().getId(),
+                c.getSender().getName(),
+                c.getReceiver().getId(),
+                c.getReceiver().getName(),
+                c.getStatus().toString()
+        )));
+
+        return result;
+    }
+
     public List<ConnectionResponse> getPendingRequests(String email) {
         User receiver = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return connectionRepository.findByReceiverIdAndStatus(receiver.getId(), ConnectionStatus.PENDING)
                 .stream()
-                .map(c -> new ConnectionResponse(c.getId(), c.getSender().getName(), c.getStatus().toString()))
+                .map(c -> new ConnectionResponse(
+                        c.getId(),
+                        c.getSender().getId(),
+                        c.getSender().getName(),
+                        c.getReceiver().getId(),
+                        c.getReceiver().getName(),
+                        c.getStatus().toString()
+                ))
                 .collect(Collectors.toList());
     }
 }
