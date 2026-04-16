@@ -39,4 +39,8 @@ public class ConnectionController {
     public ResponseEntity<List<ConnectionResponse>> getPendingRequests(Principal principal) {
         return ResponseEntity.ok(connectionService.getPendingRequests(principal.getName()));
     }
+    @GetMapping("/accepted")
+    public ResponseEntity<List<ConnectionResponse>> getAcceptedConnections(Principal principal) {
+        return ResponseEntity.ok(connectionService.getAcceptedConnections(principal.getName()));
+    }
 }
