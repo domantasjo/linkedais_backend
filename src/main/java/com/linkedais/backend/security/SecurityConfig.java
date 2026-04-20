@@ -64,6 +64,9 @@ public class SecurityConfig {
       .authorizeHttpRequests(auth -> auth
         // These URLs are PUBLIC - anyone can access without login
         .requestMatchers("/api/auth/**").permitAll()
+
+        // Check if admin role
+        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
         
         // All other URLs require authentication (must have valid JWT token)
         .anyRequest().authenticated())

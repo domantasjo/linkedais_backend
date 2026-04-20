@@ -62,13 +62,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         
         // Step 5: Get the user's email (subject) from the token
         String subject = claims.getSubject();
-        
-        // Step 6: Create an authentication object for Spring Security
-        // This tells Spring "this user is logged in with ROLE_USER"
+
+        // Step 6: Extract role from token claims (defaults to "USER" if not present)
+        String role = claims.get("role", String.class);
+        if (role == null) {
+            role = "USER";
+        }
+        // Ensure role has "ROLE_" prefix for Spring Security
+        if (!role.startsWith("ROLE_")) {
+            role = "ROLE_" + role;
+        }
+
+        // Step 7: Create an authentication object for Spring Security
         var auth = new UsernamePasswordAuthenticationToken(
             subject,  // User email
             null,     // No password needed (already authenticated via token)
-            Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))  // User's roles/permissions
+            Collections.singletonList(new SimpleGrantedAuthority(role))  // User's role from token
         );
         
         // Step 7: Store authentication in Spring Security's context
