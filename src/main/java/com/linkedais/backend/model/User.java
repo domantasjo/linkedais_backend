@@ -31,6 +31,10 @@ public class User {
     // User's display name (optional - can be null)
     private String name;
 
+    // roles
+    @Column(nullable = false)
+    private String role = "USER"; // visi vartotojai default bus useriai
+
     @Column(length = 500)
     private String bio;
 
@@ -209,4 +213,12 @@ public class User {
     public List<Long> getCompletedCourseIds() { return completedCourseIds; }
 
     public void setCompletedCourseIds(List<Long> completedCourseIds) { this.completedCourseIds = completedCourseIds; }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getRole(){
+        return role;
+    }
 }

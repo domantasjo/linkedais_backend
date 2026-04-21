@@ -79,7 +79,8 @@ public class AuthController {
         Map<String, Object> claims = new HashMap<>();
         claims.put("name", user.getName());
         claims.put("email", user.getEmail());
-        
+        claims.put("role", user.getRole());
+
         // Step 5: Generate JWT token
         String token = jwtUtil.generateToken(user.getEmail(), claims);
         
@@ -113,6 +114,7 @@ public class AuthController {
             Map<String, Object> claims = new HashMap<>();
             claims.put("name", user.getName());
             claims.put("email", user.getEmail());
+            claims.put("role", user.getRole());
 
             // Step 4: Generate JWT token
             String token = jwtUtil.generateToken(user.getEmail(), claims);
