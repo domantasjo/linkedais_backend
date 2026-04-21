@@ -13,5 +13,6 @@ public record ScheduleDTO(
         String location,
         String type,
         String recurrence,      // WEEKLY, BIWEEKLY, ONCE
-        LocalDate specificDate  // Only for ONCE events
+        LocalDate specificDate,  // Only for ONCE events
+        String weekParity
 ) {}

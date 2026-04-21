@@ -38,6 +38,9 @@ public class ScheduleEntry {
 
     private LocalDate specificDate; // Used when recurrence = ONCE
 
+    @Column(name = "week_parity")
+    private String weekParity; // ODD, EVEN (only for BIWEEKLY)
+
     // Constructors
     public ScheduleEntry() {
         this.recurrence = "WEEKLY"; // Default
@@ -86,4 +89,7 @@ public class ScheduleEntry {
 
     public LocalDate getSpecificDate() { return specificDate; }
     public void setSpecificDate(LocalDate specificDate) { this.specificDate = specificDate; }
+
+    public String getWeekParity() { return weekParity; }
+    public void setWeekParity(String weekParity) { this.weekParity = weekParity; }
 }

@@ -52,7 +52,8 @@ public class ScheduleService {
                 entry.getLocation(),
                 entry.getType(),
                 entry.getRecurrence(),
-                entry.getSpecificDate()
+                entry.getSpecificDate(),
+                entry.getWeekParity()
         );
     }
 }
