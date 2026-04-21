@@ -74,8 +74,8 @@ public class SecurityConfig {
       // What to do when user is not authenticated
       .exceptionHandling(ex -> ex
         .authenticationEntryPoint((req, res, e) -> res.sendError(401, "Unauthorized")))
-      
-      .headers(headers -> headers.frameOptions(frame -> frame.deny()));
+
+            .headers(headers -> headers.frameOptions(frame -> frame.deny()));
 
     // Add our JWT filter BEFORE Spring's default authentication filter
     // This ensures JWT tokens are checked first
