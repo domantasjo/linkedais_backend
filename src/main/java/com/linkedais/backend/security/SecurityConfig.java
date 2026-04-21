@@ -64,7 +64,6 @@ public class SecurityConfig {
       .authorizeHttpRequests(auth -> auth
         // These URLs are PUBLIC - anyone can access without login
         .requestMatchers("/api/auth/**").permitAll()
-        .requestMatchers("/h2-console/**").permitAll()
         
         // All other URLs require authentication (must have valid JWT token)
         .anyRequest().authenticated())
@@ -73,7 +72,7 @@ public class SecurityConfig {
       .exceptionHandling(ex -> ex
         .authenticationEntryPoint((req, res, e) -> res.sendError(401, "Unauthorized")))
 
-            .headers(headers -> headers.frameOptions(frame -> frame.disable()));
+            .headers(headers -> headers.frameOptions(frame -> frame.deny()));
 
     // Add our JWT filter BEFORE Spring's default authentication filter
     // This ensures JWT tokens are checked first
