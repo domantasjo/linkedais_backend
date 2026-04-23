@@ -1,6 +1,8 @@
 package com.linkedais.backend.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EnrollmentResponse {
     private Long id;
@@ -10,7 +12,11 @@ public class EnrollmentResponse {
     private Long courseId;
     private String courseName;
     private String courseCode;
+    /** Admin-set final grade override (may be null). */
     private Double grade;
+    /** Auto-computed weighted grade (may be null if no assignments graded). */
+    private Double suggestedGrade;
+    private List<AssignmentScoreDTO> assignmentScores = new ArrayList<>();
     private LocalDateTime enrolledAt;
 
     public EnrollmentResponse() {}
@@ -28,6 +34,12 @@ public class EnrollmentResponse {
         this.grade = grade;
         this.enrolledAt = enrolledAt;
     }
+
+    public Double getSuggestedGrade() { return suggestedGrade; }
+    public void setSuggestedGrade(Double suggestedGrade) { this.suggestedGrade = suggestedGrade; }
+
+    public List<AssignmentScoreDTO> getAssignmentScores() { return assignmentScores; }
+    public void setAssignmentScores(List<AssignmentScoreDTO> assignmentScores) { this.assignmentScores = assignmentScores; }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
