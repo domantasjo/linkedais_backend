@@ -1,7 +1,9 @@
 package com.linkedais.backend.security;
 
-import com.linkedais.backend.service.CustomUserDetailsService;
-import org.springframework.context.annotation.*;
+import java.util.Arrays;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,7 +15,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import java.util.Arrays;
+
+import com.linkedais.backend.service.CustomUserDetailsService;
 
 /**
  * Security Configuration - The brain of the authentication system
@@ -65,8 +68,10 @@ public class SecurityConfig {
         // These URLs are PUBLIC - anyone can access without login
         .requestMatchers("/api/auth/**").permitAll()
 
-        // Check if admin role
-        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+        // Check if admin role. JwtAuthenticationFilter stores role as "ROLE_ADMIN",
+        // and hasRole("ADMIN") internally matches "ROLE_ADMIN". Using hasAuthority("ADMIN")
+        // would fail because the stored authority is "ROLE_ADMIN".
+        .requestMatchers("/api/admin/**").hasRole("ADMIN")
         
         // All other URLs require authentication (must have valid JWT token)
         .anyRequest().authenticated())
