@@ -1,18 +1,25 @@
 package com.linkedais.backend.controller;
 
-import com.linkedais.backend.model.User;
-import com.linkedais.backend.service.UserService;
-import com.linkedais.backend.dto.UpdateProfileRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-import com.linkedais.backend.dto.UserProfileDTO;
-import com.linkedais.backend.dto.UpdateNameRequest;
-import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.linkedais.backend.dto.EnrollmentResponse;
+import com.linkedais.backend.dto.UpdateProfileRequest;
+import com.linkedais.backend.dto.UserProfileDTO;
+import com.linkedais.backend.service.EnrollmentService;
+import com.linkedais.backend.service.UserService;
+
+import jakarta.validation.Valid;
 
 /**
  * User Controller
@@ -24,9 +31,11 @@ import java.util.Map;
 @RequestMapping("/api/user")  // All endpoints start with /api/user
 public class UserController {
     private final UserService userService;
+    private final EnrollmentService enrollmentService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, EnrollmentService enrollmentService) {
         this.userService = userService;
+        this.enrollmentService = enrollmentService;
     }
     /**
      * GET CURRENT USER ENDPOINT
@@ -79,6 +88,15 @@ public class UserController {
             @Valid @RequestBody UpdateProfileRequest request) {
         String email = authentication.getName();
         return ResponseEntity.ok(userService.updateProfile(email, request));
+    }
+
+    /**
+     * GET CURRENT STUDENT'S GRADES
+     * GET /api/user/grades
+     */
+    @GetMapping("/grades")
+    public ResponseEntity<List<EnrollmentResponse>> getMyGrades(Authentication authentication) {
+        return ResponseEntity.ok(enrollmentService.getStudentEnrollmentsByEmail(authentication.getName()));
     }
 
 }
