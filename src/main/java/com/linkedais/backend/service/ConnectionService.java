@@ -1,6 +1,7 @@
 package com.linkedais.backend.service;
 
 import com.linkedais.backend.dto.ConnectionResponse;
+import com.linkedais.backend.dto.ConnectionStatusResponse;
 import com.linkedais.backend.model.Connection;
 import com.linkedais.backend.model.Notification;
 import com.linkedais.backend.model.User;
@@ -85,23 +86,22 @@ public class ConnectionService {
         notificationRepository.save(notification);
     }
 
-    public String getConnectionStatus(String senderEmail, Long receiverId) {
-        User sender = userRepository.findByEmail(senderEmail)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public ConnectionStatusResponse getConnectionStatus(String senderEmail, Long receiverId) {
+        User sender = userRepository.findByEmail(senderEmail).orElseThrow(() -> new RuntimeException("User not found"));
 
         // Check if current user sent a request
         Optional<Connection> sent = connectionRepository.findBySenderIdAndReceiverId(sender.getId(), receiverId);
         if (sent.isPresent()) {
-            return sent.get().getStatus().toString();
+            return new ConnectionStatusResponse(sent.get().getStatus().toString(), sent.get().getId());
         }
 
         // Check if current user received a request
         Optional<Connection> received = connectionRepository.findBySenderIdAndReceiverId(receiverId, sender.getId());
         if (received.isPresent()) {
-            return received.get().getStatus().toString();
+            return new ConnectionStatusResponse(received.get().getStatus().toString(), received.get().getId());
         }
 
-        return "NONE";
+        return new ConnectionStatusResponse("NONE", null);
     }
 
     public List<ConnectionResponse> getAcceptedConnections(String email) {
@@ -150,5 +150,14 @@ public class ConnectionService {
                         c.getStatus().toString()
                 ))
                 .collect(Collectors.toList());
+    }
+    public void removeConnection(Long connectionId, String email) {
+        Connection connection = connectionRepository.findById(connectionId).orElseThrow(() -> new RuntimeException("Connection not found"));
+        User user  = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        if (!connection.getSender().getId().equals(user.getId()) &&  !connection.getReceiver().getId().equals(user.getId())) {
+            throw new RuntimeException("You are not allowed to remove this connection");
+        }
+        connectionRepository.delete(connection);
+
     }
 }

@@ -82,4 +82,9 @@ public class PostService {
         }
         postRepository.deleteById(id);
     }
+    public void test(String p1, String p2,String p3,String p4,String p5,String p6, String p7) {
+        for (int i = 0; i < 100; i++) {
+            System.out.println(p1 + " " + p2 + " " + p3 + " " + p4 + " " + p5 + " " + p6 + " " + p7);
+        }
+    }
 }
