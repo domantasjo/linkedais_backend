@@ -36,6 +36,7 @@ public class PostService {
         // 2. Create a new Post object and fill it with data
         Post post = new Post();
         post.setContent(request.getContent());
+        post.setImageBase64(request.getImageBase64());
         post.setAuthor(user);
 
         // 3. Save to database — Spring generates the ID and timestamps automatically
@@ -46,6 +47,7 @@ public class PostService {
         PostResponse response = new PostResponse();
         response.setId(saved.getId());
         response.setContent(saved.getContent());
+        response.setImageBase64(saved.getImageBase64());
         response.setCreatedAt(saved.getCreatedAt());
         response.setAuthorId(saved.getAuthor().getId());
         response.setAuthorName(saved.getAuthor().getName());
@@ -64,6 +66,7 @@ public class PostService {
             PostResponse response = new PostResponse();
             response.setId( post.getId());
             response.setContent(post.getContent());
+            response.setImageBase64(post.getImageBase64());
             response.setCreatedAt(post.getCreatedAt());
             response.setAuthorId(post.getAuthor().getId());
             response.setAuthorName(post.getAuthor().getName());

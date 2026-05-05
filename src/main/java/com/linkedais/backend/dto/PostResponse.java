@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 public class PostResponse {
     private long id;
     private String content;
+    private String imageBase64;
     private LocalDateTime createdAt;
     private int likeCount;
 
@@ -18,6 +19,8 @@ public class PostResponse {
     public void setId(long id) { this.id = id; }
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
+    public String getImageBase64() { return imageBase64; }
+    public void setImageBase64(String imageBase64) { this.imageBase64 = imageBase64; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public long getAuthorId() { return authorId; }
