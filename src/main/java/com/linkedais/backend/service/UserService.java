@@ -55,6 +55,7 @@ public class UserService {
 
         user.setName(request.getName());
         user.setBio(request.getBio());
+        user.setHeadline(request.getHeadline());
         user.setUniversity(request.getUniversity());
         user.setStudyProgram(request.getStudyProgram());
         if (request.getSkills() != null) {
@@ -85,6 +86,7 @@ public class UserService {
                 user.getName(),
                 user.getEmail(),
                 user.getBio(),
+                user.getHeadline(),
                 user.getUniversity(),
                 user.getStudyProgram(),
                 user.getSkills(),

@@ -14,6 +14,9 @@ public class UpdateProfileRequest {
     @Size(max = 500, message = "Bio must be at most 500 characters")
     private String bio;
 
+    @Size(max = 120, message = "Headline must be at most 120 characters")
+    private String headline;
+
     @Size(max = 200, message = "University must be at most 200 characters")
     private String university;
 
@@ -30,6 +33,9 @@ public class UpdateProfileRequest {
 
     public String getBio() { return bio; }
     public void setBio(String bio) { this.bio = bio; }
+
+    public String getHeadline() { return headline; }
+    public void setHeadline(String headline) { this.headline = headline; }
 
     public String getUniversity() { return university; }
     public void setUniversity(String university) { this.university = university; }

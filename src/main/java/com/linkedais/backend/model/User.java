@@ -70,6 +70,9 @@ public class User {
     @Column(name="course_id")
     private List<Long> completedCourseIds = new ArrayList<>();
 
+    @Column(name = "headline", length = 120)
+    private String headline;
+
 
     // Timestamp when user registered
     @Column(name = "created_at")  // Column name in database will be "created_at"
@@ -221,4 +224,8 @@ public class User {
     public String getRole(){
         return role;
     }
+
+    public String getHeadline() { return headline; }
+
+    public void setHeadline(String headline) { this.headline = headline; }
 }

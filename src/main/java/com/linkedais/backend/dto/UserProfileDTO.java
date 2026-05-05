@@ -7,6 +7,7 @@ public record UserProfileDTO(
         String name,
         String email,
         String bio,
+        String headline,
         String university,
         String studyProgram,
         List<String> skills,
