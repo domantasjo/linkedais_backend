@@ -13,9 +13,11 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final WorkExperienceService workExperienceService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, WorkExperienceService workExperienceService) {
         this.userRepository = userRepository;
+        this.workExperienceService = workExperienceService;
     }
 
     public UserProfileDTO getPublicProfile(Long userId) {
@@ -92,7 +94,8 @@ public class UserService {
                 user.getSkills(),
                 user.getCourses() != null ? user.getCourses().stream()
                         .map(c -> new com.linkedais.backend.dto.CourseDTO(c.getId(), c.getName(), c.getInstructor()))
-                        .collect(Collectors.toList()) : List.of()
+                        .collect(Collectors.toList()) : List.of(),
+                workExperienceService.getUserWorkExperiences(user.getId())
         );
     }
 
