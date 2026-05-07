@@ -14,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -86,7 +87,8 @@ public class User {
     @Column(name = "headline", length = 120)
     private String headline;
 
-    @Column(name = "profile_picture_base64", columnDefinition = "LONGTEXT")
+    @Lob
+    @Column(name = "profile_picture_base64")
     private String profilePictureBase64;
 
 
