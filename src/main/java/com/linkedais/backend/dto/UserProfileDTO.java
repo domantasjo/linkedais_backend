@@ -12,5 +12,6 @@ public record UserProfileDTO(
         String studyProgram,
         List<String> skills,
         List<CourseDTO> courses,
-        List<WorkExperienceResponse> workExperiences
+        List<WorkExperienceResponse> workExperiences,
+        String profilePictureBase64
 ) {}

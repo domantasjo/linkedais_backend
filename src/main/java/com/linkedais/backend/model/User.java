@@ -1,9 +1,23 @@
 package com.linkedais.backend.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 
 /**
  * User Entity - Represents a user in our database
@@ -72,6 +86,10 @@ public class User {
 
     @Column(name = "headline", length = 120)
     private String headline;
+
+    @Lob
+    @Column(name = "profile_picture_base64")
+    private String profilePictureBase64;
 
 
     // Timestamp when user registered
@@ -228,4 +246,8 @@ public class User {
     public String getHeadline() { return headline; }
 
     public void setHeadline(String headline) { this.headline = headline; }
+
+    public String getProfilePictureBase64() { return profilePictureBase64; }
+
+    public void setProfilePictureBase64(String profilePictureBase64) { this.profilePictureBase64 = profilePictureBase64; }
 }

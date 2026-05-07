@@ -1,5 +1,12 @@
 package com.linkedais.backend.service;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.linkedais.backend.dto.ConnectionResponse;
 import com.linkedais.backend.dto.ConnectionStatusResponse;
 import com.linkedais.backend.model.Connection;
@@ -8,13 +15,8 @@ import com.linkedais.backend.model.User;
 import com.linkedais.backend.repository.ConnectionRepository;
 import com.linkedais.backend.repository.NotificationRepository;
 import com.linkedais.backend.repository.UserRepository;
-import enums.ConnectionStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import enums.ConnectionStatus;
 
 @Service
 public class ConnectionService {
@@ -119,8 +121,10 @@ public class ConnectionService {
                 c.getId(),
                 c.getSender().getId(),
                 c.getSender().getName(),
+                c.getSender().getProfilePictureBase64(),
                 c.getReceiver().getId(),
                 c.getReceiver().getName(),
+                c.getReceiver().getProfilePictureBase64(),
                 c.getStatus().toString()
         )));
 
@@ -128,8 +132,10 @@ public class ConnectionService {
                 c.getId(),
                 c.getSender().getId(),
                 c.getSender().getName(),
+                c.getSender().getProfilePictureBase64(),
                 c.getReceiver().getId(),
                 c.getReceiver().getName(),
+                c.getReceiver().getProfilePictureBase64(),
                 c.getStatus().toString()
         )));
 
