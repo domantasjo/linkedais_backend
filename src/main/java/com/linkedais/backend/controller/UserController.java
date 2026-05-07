@@ -1,5 +1,6 @@
 package com.linkedais.backend.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,15 +9,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.linkedais.backend.dto.EnrollmentResponse;
 import com.linkedais.backend.dto.UpdateProfileRequest;
 import com.linkedais.backend.dto.UserProfileDTO;
 import com.linkedais.backend.service.EnrollmentService;
+import com.linkedais.backend.service.ImageUploadService;
 import com.linkedais.backend.service.UserService;
 
 import jakarta.validation.Valid;
@@ -32,10 +37,12 @@ import jakarta.validation.Valid;
 public class UserController {
     private final UserService userService;
     private final EnrollmentService enrollmentService;
+    private final ImageUploadService imageUploadService;
 
-    public UserController(UserService userService, EnrollmentService enrollmentService) {
+    public UserController(UserService userService, EnrollmentService enrollmentService, ImageUploadService imageUploadService) {
         this.userService = userService;
         this.enrollmentService = enrollmentService;
+        this.imageUploadService = imageUploadService;
     }
     /**
      * GET CURRENT USER ENDPOINT
@@ -97,6 +104,28 @@ public class UserController {
     @GetMapping("/grades")
     public ResponseEntity<List<EnrollmentResponse>> getMyGrades(Authentication authentication) {
         return ResponseEntity.ok(enrollmentService.getStudentEnrollmentsByEmail(authentication.getName()));
+    }
+
+    /**
+     * UPLOAD PROFILE PICTURE
+     * POST /api/user/profile-picture
+     */
+    @PostMapping("/profile-picture")
+    public ResponseEntity<?> uploadProfilePicture(
+            Authentication authentication,
+            @RequestParam("image") MultipartFile file) {
+        try {
+            if (file.isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "File is empty"));
+            }
+            String base64 = imageUploadService.convertToBase64(file);
+            UserProfileDTO updated = userService.updateProfilePicture(authentication.getName(), base64);
+            return ResponseEntity.ok(updated);
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Failed to process image"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
 }

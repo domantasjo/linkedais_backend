@@ -1,5 +1,13 @@
 package com.linkedais.backend.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import com.linkedais.backend.dto.CreatePostRequest;
 import com.linkedais.backend.dto.PostResponse;
 import com.linkedais.backend.model.Post;
@@ -8,14 +16,6 @@ import com.linkedais.backend.repository.CommentRepository;
 import com.linkedais.backend.repository.LikeRepository;
 import com.linkedais.backend.repository.PostRepository;
 import com.linkedais.backend.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class PostService {
@@ -51,6 +51,7 @@ public class PostService {
         response.setCreatedAt(saved.getCreatedAt());
         response.setAuthorId(saved.getAuthor().getId());
         response.setAuthorName(saved.getAuthor().getName());
+        response.setAuthorAvatar(saved.getAuthor().getProfilePictureBase64());
         response.setLikeCount(likeRepository.countByPostId(saved.getId()));
         response.setCommentCount(0);
         return response;
@@ -70,6 +71,7 @@ public class PostService {
             response.setCreatedAt(post.getCreatedAt());
             response.setAuthorId(post.getAuthor().getId());
             response.setAuthorName(post.getAuthor().getName());
+            response.setAuthorAvatar(post.getAuthor().getProfilePictureBase64());
             response.setLikeCount(likeRepository.countByPostId(post.getId()));
             response.setCommentCount(commentRepository.countByPostId(post.getId()));
             postResponses.add(response);

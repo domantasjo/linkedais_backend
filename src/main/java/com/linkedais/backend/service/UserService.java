@@ -1,14 +1,15 @@
 package com.linkedais.backend.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import com.linkedais.backend.dto.UpdateProfileRequest;
 import com.linkedais.backend.dto.UserProfileDTO;
 import com.linkedais.backend.dto.UserSearchResponse;
 import com.linkedais.backend.model.User;
 import com.linkedais.backend.repository.UserRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -82,6 +83,13 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
     }
 
+    public UserProfileDTO updateProfilePicture(String email, String base64) {
+        User user = findByEmail(email);
+        user.setProfilePictureBase64(base64);
+        User updated = userRepository.save(user);
+        return toProfileDTO(updated);
+    }
+
     private UserProfileDTO toProfileDTO(User user) {
         return new UserProfileDTO(
                 user.getId(),
@@ -95,7 +103,8 @@ public class UserService {
                 user.getCourses() != null ? user.getCourses().stream()
                         .map(c -> new com.linkedais.backend.dto.CourseDTO(c.getId(), c.getName(), c.getInstructor()))
                         .collect(Collectors.toList()) : List.of(),
-                workExperienceService.getUserWorkExperiences(user.getId())
+                workExperienceService.getUserWorkExperiences(user.getId()),
+                user.getProfilePictureBase64()
         );
     }
 
