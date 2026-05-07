@@ -122,8 +122,10 @@ public class UserController {
                 return ResponseEntity.badRequest().body(Map.of("error", "File is empty"));
             }
             String base64 = imageUploadService.convertToBase64(file);
-            UserProfileDTO updated = userService.updateProfilePicture(authentication.getName(), base64);
-            return ResponseEntity.ok(updated);
+            userService.updateProfilePicture(authentication.getName(), base64);
+            // Return only the new base64 (not the whole user) to keep the response small
+            // and to avoid any @Lob re-read quirks after save().
+            return ResponseEntity.ok(Map.of("profilePictureBase64", base64));
         } catch (IOException e) {
             return ResponseEntity.internalServerError().body(Map.of("error", "Failed to process image"));
         } catch (RuntimeException e) {
