@@ -48,5 +48,4 @@ public class ConnectionController {
         connectionService.removeConnection(connectionId, principal.getName());
         return ResponseEntity.noContent().build();
     }
-
 }
