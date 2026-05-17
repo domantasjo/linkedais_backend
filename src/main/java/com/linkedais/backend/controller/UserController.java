@@ -1,13 +1,18 @@
 package com.linkedais.backend.controller;
 
 import java.io.IOException;
+import java.nio.file.attribute.UserPrincipal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.linkedais.backend.model.User;
+import com.linkedais.backend.repository.UserRepository;
+import com.linkedais.backend.service.UserStatusService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,11 +46,15 @@ public class UserController {
     private final UserService userService;
     private final EnrollmentService enrollmentService;
     private final ImageUploadService imageUploadService;
+    private final UserStatusService userStatusService;
+    private final UserRepository userRepository;
 
-    public UserController(UserService userService, EnrollmentService enrollmentService, ImageUploadService imageUploadService) {
+    public UserController(UserService userService, EnrollmentService enrollmentService, ImageUploadService imageUploadService, UserStatusService userStatusService, UserRepository userRepository) {
         this.userService = userService;
         this.enrollmentService = enrollmentService;
         this.imageUploadService = imageUploadService;
+        this.userStatusService = userStatusService;
+        this.userRepository = userRepository;
     }
     /**
      * GET CURRENT USER ENDPOINT
@@ -143,4 +152,23 @@ public class UserController {
                 .body(Map.of("error", "Failas per didelis. Maksimalus dydis: 10MB"));
     }
 
+    @PostMapping("/heartbeat")
+    public ResponseEntity<Void> handleHeartbeat(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        userStatusService.processHeartbeat(user.getId());
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/statuses")
+    public ResponseEntity<Map<Long, String>> getStatuses(@RequestParam List<Long> ids) {
+        Map<Long, String> statuses = new HashMap<>();
+        for (Long id : ids) {
+            statuses.put(id, userStatusService.getStatus(id));
+        }
+        return ResponseEntity.ok(statuses);
+    }
 }
