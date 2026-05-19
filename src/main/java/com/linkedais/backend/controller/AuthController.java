@@ -2,10 +2,13 @@ package com.linkedais.backend.controller;
 
 import com.linkedais.backend.dto.AuthRequest;
 import com.linkedais.backend.dto.AuthResponse;
+import com.linkedais.backend.dto.ChangePasswordRequest;
 import com.linkedais.backend.model.User;
 import com.linkedais.backend.repository.UserRepository;
 import com.linkedais.backend.security.JwtUtil;
+import com.linkedais.backend.service.AuthService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +40,8 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;   // To hash passwords securely
     private final JwtUtil jwtUtil;                  // To generate JWT tokens
     private final AuthenticationManager authenticationManager;  // To verify login credentials
+    @Autowired
+    private AuthService authService;
 
     // Constructor injection - Spring provides all these automatically
     public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, 
@@ -127,6 +133,17 @@ public class AuthController {
             // Return 401 Unauthorized with error message
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Invalid credentials"));
+        }
+    }
+    @PatchMapping("/change-password")
+    public ResponseEntity<?> changePassword(
+            @RequestBody ChangePasswordRequest request,
+            Principal principal) {
+        try {
+            authService.changePassword(principal.getName(), request);
+            return ResponseEntity.ok(Map.of("message", "Slaptažodis sėkmingai pakeistas"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 }

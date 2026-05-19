@@ -96,7 +96,7 @@ public class SecurityConfig {
     config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
     
     // Allow these HTTP methods
-    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+      config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
     
     // Allow all headers
     config.setAllowedHeaders(Arrays.asList("*"));
