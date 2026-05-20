@@ -20,6 +20,10 @@ public class Post {
     @JoinColumn(name = "user_id",  nullable = false)
     private User author;
 
+    @ManyToOne
+    @JoinColumn(name = "original_post_id")
+    private Post originalPost;
+
     private LocalDateTime createdAt;
 
     @PrePersist
@@ -38,6 +42,9 @@ public class Post {
 
     public User getAuthor() { return author; }
     public void setAuthor(User author) { this.author = author; }
+
+    public Post getOriginalPost() { return originalPost; }
+    public void setOriginalPost(Post originalPost) { this.originalPost = originalPost; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
 }
