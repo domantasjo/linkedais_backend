@@ -1,17 +1,26 @@
 package com.linkedais.backend.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import com.linkedais.backend.dto.AssignmentScoreDTO;
 import com.linkedais.backend.dto.EnrollmentRequest;
 import com.linkedais.backend.dto.EnrollmentResponse;
+import com.linkedais.backend.model.Assignment;
+import com.linkedais.backend.model.AssignmentGrade;
 import com.linkedais.backend.model.Course;
 import com.linkedais.backend.model.Enrollment;
 import com.linkedais.backend.model.User;
+import com.linkedais.backend.repository.AssignmentGradeRepository;
+import com.linkedais.backend.repository.AssignmentRepository;
 import com.linkedais.backend.repository.CourseRepository;
 import com.linkedais.backend.repository.EnrollmentRepository;
 import com.linkedais.backend.repository.UserRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class EnrollmentService {
@@ -19,13 +28,19 @@ public class EnrollmentService {
     private final EnrollmentRepository enrollmentRepository;
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
+    private final AssignmentRepository assignmentRepository;
+    private final AssignmentGradeRepository assignmentGradeRepository;
 
     public EnrollmentService(EnrollmentRepository enrollmentRepository,
                               UserRepository userRepository,
-                              CourseRepository courseRepository) {
+                              CourseRepository courseRepository,
+                              AssignmentRepository assignmentRepository,
+                              AssignmentGradeRepository assignmentGradeRepository) {
         this.enrollmentRepository = enrollmentRepository;
         this.userRepository = userRepository;
         this.courseRepository = courseRepository;
+        this.assignmentRepository = assignmentRepository;
+        this.assignmentGradeRepository = assignmentGradeRepository;
     }
 
     public EnrollmentResponse enrollStudent(EnrollmentRequest request) {
@@ -87,7 +102,7 @@ public class EnrollmentService {
     private EnrollmentResponse toResponse(Enrollment e) {
         User student = e.getStudent();
         Course course = e.getCourse();
-        return new EnrollmentResponse(
+        EnrollmentResponse resp = new EnrollmentResponse(
                 e.getId(),
                 student.getId(),
                 student.getName(),
@@ -98,5 +113,31 @@ public class EnrollmentService {
                 e.getGrade(),
                 e.getEnrolledAt()
         );
+        // Build assignment scores list
+        List<Assignment> assignments = assignmentRepository.findByCourseIdOrderByWeekAscIdAsc(course.getId());
+        List<AssignmentGrade> grades = assignmentGradeRepository.findByEnrollmentId(e.getId());
+        Map<Long, Double> gradeByAssignment = new HashMap<>();
+        for (AssignmentGrade g : grades) {
+            gradeByAssignment.put(g.getAssignment().getId(), g.getScore());
+        }
+        List<AssignmentScoreDTO> scores = new ArrayList<>();
+        double weightedSum = 0.0;
+        int totalWeight = 0;
+        for (Assignment a : assignments) {
+            Double s = gradeByAssignment.get(a.getId());
+            scores.add(new AssignmentScoreDTO(a.getId(), a.getCode(), a.getName(),
+                    a.getWeight(), a.getWeek(), a.getMaxScore(), s));
+            if (s != null) {
+                // Normalize to 10-point scale then weight by assignment weight
+                double normalized = (s / a.getMaxScore()) * 10.0;
+                weightedSum += normalized * a.getWeight();
+                totalWeight += a.getWeight();
+            }
+        }
+        resp.setAssignmentScores(scores);
+        if (totalWeight > 0) {
+            resp.setSuggestedGrade(Math.round((weightedSum / totalWeight) * 100.0) / 100.0);
+        }
+        return resp;
     }
 }

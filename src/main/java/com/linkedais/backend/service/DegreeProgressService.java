@@ -1,20 +1,32 @@
 package com.linkedais.backend.service;
 
-import com.linkedais.backend.model.User;
+import com.linkedais.backend.dto.EnrollmentResponse;
 import com.linkedais.backend.model.Course;
+import com.linkedais.backend.model.Enrollment;
+import com.linkedais.backend.model.User;
+import com.linkedais.backend.repository.EnrollmentRepository;
 import com.linkedais.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DegreeProgressService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EnrollmentRepository enrollmentRepository;
+
+    @Autowired
+    private EnrollmentService enrollmentService;
+
+    /** Passing grade threshold on the 10-point Lithuanian scale. */
+    private static final double PASSING_GRADE = 5.0;
 
     public Map<String, Object> getDegreeProgressByUserId(Long userId) {
         User user = userRepository.findById(userId)
@@ -29,20 +41,29 @@ public class DegreeProgressService {
     }
 
     private Map<String, Object> calculateProgress(User user) {
-        List<Course> allCourses = user.getCourses();
+        List<Enrollment> enrollments = enrollmentRepository.findByStudentId(user.getId());
 
-        int totalCredits = allCourses.stream()
-                .mapToInt(Course::getCredits)
-                .sum();
-
+        int totalCredits = 0;
         int completedCredits = 0;
-        List<Long> completedCourseIds = user.getCompletedCourseIds();
 
-        if (completedCourseIds != null && !completedCourseIds.isEmpty()) {
-            completedCredits = allCourses.stream()
-                    .filter(course -> completedCourseIds.contains(course.getId()))
-                    .mapToInt(Course::getCredits)
-                    .sum();
+        for (Enrollment e : enrollments) {
+            Course course = e.getCourse();
+            totalCredits += course.getCredits();
+
+            // Prefer admin-set final grade; fall back to computed suggested grade.
+            Double finalGrade = e.getGrade();
+            if (finalGrade == null) {
+                EnrollmentResponse enriched = enrollmentService.getStudentEnrollments(user.getId()).stream()
+                        .filter(r -> r.getId().equals(e.getId()))
+                        .findFirst()
+                        .orElse(null);
+                if (enriched != null) {
+                    finalGrade = enriched.getSuggestedGrade();
+                }
+            }
+            if (finalGrade != null && finalGrade >= PASSING_GRADE) {
+                completedCredits += course.getCredits();
+            }
         }
 
         int remainingCredits = totalCredits - completedCredits;
@@ -54,7 +75,6 @@ public class DegreeProgressService {
         result.put("totalCredits", totalCredits);
         result.put("remainingCredits", remainingCredits);
         result.put("percentage", percentage);
-
         return result;
     }
 }
