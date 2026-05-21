@@ -50,10 +50,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         // Step 2: Convert our User entity to Spring Security's UserDetails format
         // UserDetails is what Spring Security needs to verify login
+        String role = user.getRole();
+        if (role != null && !role.startsWith("ROLE_")) {
+            role = "ROLE_" + role;
+        }
+
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),     // Username (we use email as username)
-                user.getPassword(),  // Hashed password from database
-                Collections.singletonList(new SimpleGrantedAuthority(user.getRole()))  // User's roles/permissions
+            user.getEmail(),     // Username (we use email as username)
+            user.getPassword(),  // Hashed password from database
+            Collections.singletonList(new SimpleGrantedAuthority(role))  // User's roles/permissions
         );
     }
 }
