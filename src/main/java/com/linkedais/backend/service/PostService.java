@@ -1,5 +1,13 @@
 package com.linkedais.backend.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import com.linkedais.backend.dto.CreatePostRequest;
 import com.linkedais.backend.dto.PostResponse;
 import com.linkedais.backend.model.Post;
@@ -8,14 +16,6 @@ import com.linkedais.backend.repository.CommentRepository;
 import com.linkedais.backend.repository.LikeRepository;
 import com.linkedais.backend.repository.PostRepository;
 import com.linkedais.backend.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class PostService {
@@ -36,7 +36,14 @@ public class PostService {
         // 2. Create a new Post object and fill it with data
         Post post = new Post();
         post.setContent(request.getContent());
+        post.setImageBase64(request.getImageBase64());
         post.setAuthor(user);
+
+        if (request.getOriginalPostId() != null) {
+            Post original = postRepository.findById(request.getOriginalPostId())
+                    .orElseThrow(() -> new RuntimeException("Original post not found"));
+            post.setOriginalPost(original);
+        }
 
         // 3. Save to database — Spring generates the ID and timestamps automatically
         // We need to use saved not post when building the response — otherwise id and createdAt would be null!
@@ -46,11 +53,21 @@ public class PostService {
         PostResponse response = new PostResponse();
         response.setId(saved.getId());
         response.setContent(saved.getContent());
+        response.setImageBase64(saved.getImageBase64());
         response.setCreatedAt(saved.getCreatedAt());
         response.setAuthorId(saved.getAuthor().getId());
         response.setAuthorName(saved.getAuthor().getName());
+        response.setAuthorAvatar(saved.getAuthor().getProfilePictureBase64());
         response.setLikeCount(likeRepository.countByPostId(saved.getId()));
         response.setCommentCount(0);
+
+        if (saved.getOriginalPost() != null) {
+            response.setOriginalPostId(saved.getOriginalPost().getId());
+            response.setOriginalAuthorId(saved.getOriginalPost().getAuthor().getId());
+            response.setOriginalAuthorName(saved.getOriginalPost().getAuthor().getName());
+            response.setOriginalContent(saved.getOriginalPost().getContent());
+        }
+
         return response;
     }
     public List<PostResponse> getAllPosts(int page, int size) {
@@ -64,11 +81,21 @@ public class PostService {
             PostResponse response = new PostResponse();
             response.setId( post.getId());
             response.setContent(post.getContent());
+            response.setImageBase64(post.getImageBase64());
             response.setCreatedAt(post.getCreatedAt());
             response.setAuthorId(post.getAuthor().getId());
             response.setAuthorName(post.getAuthor().getName());
+            response.setAuthorAvatar(post.getAuthor().getProfilePictureBase64());
             response.setLikeCount(likeRepository.countByPostId(post.getId()));
             response.setCommentCount(commentRepository.countByPostId(post.getId()));
+
+            if (post.getOriginalPost() != null) {
+                response.setOriginalPostId(post.getOriginalPost().getId());
+                response.setOriginalAuthorId(post.getOriginalPost().getAuthor().getId());
+                response.setOriginalAuthorName(post.getOriginalPost().getAuthor().getName());
+                response.setOriginalContent(post.getOriginalPost().getContent());
+            }
+
             postResponses.add(response);
         }
         // 3. Return the full list to the controller
@@ -81,5 +108,10 @@ public class PostService {
             throw new RuntimeException("You can only delete your own posts");
         }
         postRepository.deleteById(id);
+    }
+    public void test(String p1, String p2,String p3,String p4,String p5,String p6, String p7) {
+        for (int i = 0; i < 100; i++) {
+            System.out.println(p1 + " " + p2 + " " + p3 + " " + p4 + " " + p5 + " " + p6 + " " + p7);
+        }
     }
 }

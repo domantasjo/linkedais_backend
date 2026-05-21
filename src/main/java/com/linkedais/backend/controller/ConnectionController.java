@@ -1,6 +1,7 @@
 package com.linkedais.backend.controller;
 
 import com.linkedais.backend.dto.ConnectionResponse;
+import com.linkedais.backend.dto.ConnectionStatusResponse;
 import com.linkedais.backend.service.ConnectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,9 +32,8 @@ public class ConnectionController {
         return ResponseEntity.ok().build();
     }
     @GetMapping("/status/{receiverId}")
-    public ResponseEntity<String> getStatus(@PathVariable Long receiverId, Principal principal) {
-        String status = connectionService.getConnectionStatus(principal.getName(), receiverId);
-        return ResponseEntity.ok(status);
+    public ResponseEntity<ConnectionStatusResponse> getStatus(@PathVariable Long receiverId, Principal principal) {
+        return ResponseEntity.ok(connectionService.getConnectionStatus(principal.getName(), receiverId));
     }
     @GetMapping("/pending")
     public ResponseEntity<List<ConnectionResponse>> getPendingRequests(Principal principal) {
@@ -42,5 +42,10 @@ public class ConnectionController {
     @GetMapping("/accepted")
     public ResponseEntity<List<ConnectionResponse>> getAcceptedConnections(Principal principal) {
         return ResponseEntity.ok(connectionService.getAcceptedConnections(principal.getName()));
+    }
+    @DeleteMapping("/{connectionId}")
+    public ResponseEntity<Void> removeConnection(@PathVariable Long connectionId, Principal principal) {
+        connectionService.removeConnection(connectionId, principal.getName());
+        return ResponseEntity.noContent().build();
     }
 }

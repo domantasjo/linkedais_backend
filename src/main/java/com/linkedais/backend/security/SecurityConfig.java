@@ -70,6 +70,7 @@ public class SecurityConfig {
 
         // Check if admin role. JwtAuthenticationFilter stores role as "ROLE_ADMIN",
         // and hasRole("ADMIN") internally matches "ROLE_ADMIN".
+        // Check if admin role
         .requestMatchers("/api/admin/**").hasRole("ADMIN")
         
         // All other URLs require authentication (must have valid JWT token)
@@ -100,7 +101,7 @@ public class SecurityConfig {
     config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
     
     // Allow these HTTP methods
-    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+      config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
     
     // Allow all headers
     config.setAllowedHeaders(Arrays.asList("*"));
