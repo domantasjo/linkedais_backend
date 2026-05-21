@@ -39,6 +39,12 @@ public class PostService {
         post.setImageBase64(request.getImageBase64());
         post.setAuthor(user);
 
+        if (request.getOriginalPostId() != null) {
+            Post original = postRepository.findById(request.getOriginalPostId())
+                    .orElseThrow(() -> new RuntimeException("Original post not found"));
+            post.setOriginalPost(original);
+        }
+
         // 3. Save to database — Spring generates the ID and timestamps automatically
         // We need to use saved not post when building the response — otherwise id and createdAt would be null!
         Post saved =  postRepository.save(post);
@@ -54,6 +60,14 @@ public class PostService {
         response.setAuthorAvatar(saved.getAuthor().getProfilePictureBase64());
         response.setLikeCount(likeRepository.countByPostId(saved.getId()));
         response.setCommentCount(0);
+
+        if (saved.getOriginalPost() != null) {
+            response.setOriginalPostId(saved.getOriginalPost().getId());
+            response.setOriginalAuthorId(saved.getOriginalPost().getAuthor().getId());
+            response.setOriginalAuthorName(saved.getOriginalPost().getAuthor().getName());
+            response.setOriginalContent(saved.getOriginalPost().getContent());
+        }
+
         return response;
     }
     public List<PostResponse> getAllPosts(int page, int size) {
@@ -74,6 +88,14 @@ public class PostService {
             response.setAuthorAvatar(post.getAuthor().getProfilePictureBase64());
             response.setLikeCount(likeRepository.countByPostId(post.getId()));
             response.setCommentCount(commentRepository.countByPostId(post.getId()));
+
+            if (post.getOriginalPost() != null) {
+                response.setOriginalPostId(post.getOriginalPost().getId());
+                response.setOriginalAuthorId(post.getOriginalPost().getAuthor().getId());
+                response.setOriginalAuthorName(post.getOriginalPost().getAuthor().getName());
+                response.setOriginalContent(post.getOriginalPost().getContent());
+            }
+
             postResponses.add(response);
         }
         // 3. Return the full list to the controller

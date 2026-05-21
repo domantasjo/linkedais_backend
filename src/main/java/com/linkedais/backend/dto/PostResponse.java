@@ -15,6 +15,12 @@ public class PostResponse {
     private String authorAvatar;
     private int commentCount;
 
+    // Original post info
+    private Long originalPostId;
+    private Long originalAuthorId;
+    private String originalAuthorName;
+    private String originalContent;
+
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }
     public String getContent() { return content; }
@@ -33,4 +39,13 @@ public class PostResponse {
     public void setLikeCount(int likeCount) { this.likeCount = likeCount; }
     public int getCommentCount() { return commentCount; }
     public void setCommentCount(int commentCount) { this.commentCount = commentCount; }
+
+    public Long getOriginalPostId() { return originalPostId; }
+    public void setOriginalPostId(Long originalPostId) { this.originalPostId = originalPostId; }
+    public Long getOriginalAuthorId() { return originalAuthorId; }
+    public void setOriginalAuthorId(Long originalAuthorId) { this.originalAuthorId = originalAuthorId; }
+    public String getOriginalAuthorName() { return originalAuthorName; }
+    public void setOriginalAuthorName(String originalAuthorName) { this.originalAuthorName = originalAuthorName; }
+    public String getOriginalContent() { return originalContent; }
+    public void setOriginalContent(String originalContent) { this.originalContent = originalContent; }
 }
