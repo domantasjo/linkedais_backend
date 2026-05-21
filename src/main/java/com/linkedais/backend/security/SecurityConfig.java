@@ -66,7 +66,7 @@ public class SecurityConfig {
         .requestMatchers("/api/auth/**").permitAll()
 
         // Check if admin role
-        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+        .requestMatchers("/api/admin/**").hasRole("ADMIN")
         
         // All other URLs require authentication (must have valid JWT token)
         .anyRequest().authenticated())
